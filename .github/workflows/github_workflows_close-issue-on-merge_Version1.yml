@@ -6,6 +6,10 @@ on:
     branches:
       - dev
       - stage
+      
+permissions:
+  issues: write
+  pull-requests: read
 
 jobs:
   close_issue:
@@ -16,7 +20,7 @@ jobs:
         with:
           script: |
             const body = context.payload.pull_request.body;
-            const issueMatches = body.match(/(?:Closes|Fixes|Resolves) #(\d+)/g);
+            const issueMatches = body.match(/(?:Closes|Fixes|Resolves) #(\d+)/gi);
             if (issueMatches) {
               for (const match of issueMatches) {
                 const issueNumber = match.match(/#(\d+)/)[1];
