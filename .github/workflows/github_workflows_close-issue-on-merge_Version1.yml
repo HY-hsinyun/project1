@@ -1,0 +1,34 @@
+name: Close Issue on Merge to Dev or Stage
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - dev
+      - stage
+      
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  close_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close issue via API
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body;
+            const issueMatches = body.match(/(?:Closes|Fixes|Resolves) #(\d+)/gi);
+            if (issueMatches) {
+              for (const match of issueMatches) {
+                const issueNumber = match.match(/#(\d+)/)[1];
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  state: "closed"
+                });
+              }
+            }
