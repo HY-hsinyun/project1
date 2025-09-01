@@ -1,0 +1,23 @@
+name: Auto Label on Issue Events
+
+on:
+  issues:
+    types: [opened, closed]
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add label when issue is opened
+        if: github.event.action == 'opened'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "needs-triage"
+
+      - name: Add label when issue is closed
+        if: github.event.action == 'closed'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "done"
