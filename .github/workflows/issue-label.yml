@@ -2,7 +2,7 @@ name: Auto Label on Issue Events
 
 on:
   issues:
-    types: [opened, closed]
+    types: [opened, closed, reopened]
     
 permissions:
   issues: write
@@ -31,3 +31,17 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           labels: "done"
+
+      - name: Remove "done" label when issue is reopened
+        if: github.event.action == 'reopened'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "done"
+
+      - name: Add "to-be-done" label when issue is reopened
+        if: github.event.action == 'reopened'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: "to-be-done"
