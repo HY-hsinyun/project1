@@ -3,7 +3,10 @@ name: Auto Label on Issue Events
 on:
   issues:
     types: [opened, closed]
-
+    
+permissions:
+  issues: write
+  
 jobs:
   add-label:
     runs-on: ubuntu-latest
